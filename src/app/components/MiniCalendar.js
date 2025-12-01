@@ -57,7 +57,7 @@ export default function MiniCalendar({ onSelect }) {
     <div className="relative inline-block">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 bg-cyan-700 text-white px-4 py-2 rounded-xl shadow-md hover:bg-cyan-600 transition"
+        className="flex items-center gap-2 w-full bg-gradient-to-r from-purple-700 to-indigo-600 hover:brightness-110 p-3 rounded-xl font-bold transition shadow-md text-white"
       >
         <Calendar size={18} /> Selecionar Dia
       </button>
@@ -99,7 +99,7 @@ export default function MiniCalendar({ onSelect }) {
                 {day ? (
                   <button
                     onClick={() => selectDay(day)}
-                    className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-cyan-600 hover:text-white transition"
+                    className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-purple-800 hover:text-white transition"
                   >
                     {day}
                   </button>

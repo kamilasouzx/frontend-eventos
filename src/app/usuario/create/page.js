@@ -30,11 +30,7 @@ export default function RegisterPage() {
     setSucesso("");
 
     try {
-      const payload = {
-        ...form,
-        dataNascimento: form.dataNascimento // já vem yyyy-mm-dd
-      };
-
+      const payload = { ...form };
       const response = await axios.post(
         "http://localhost:8080/api/v1/usuario",
         payload
@@ -50,101 +46,60 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cyan-900 text-white">
+    <div className="min-h-screen relative flex items-center justify-center bg-slate-900 text-white">
+      {/* Fundo gradiente HomePage */}
+      <div className="absolute inset-0 bg-gradient-to-b from-purple-700/10 to-slate-900 pointer-events-none"></div>
+
       <form
+        className="relative z-10 w-full max-w-md bg-indigo-300/50 p-6 rounded-2xl shadow-2xl backdrop-blur-md border border-slate-700/30"
+      
         onSubmit={handleSubmit}
-        className="w-full max-w-md bg-cyan-800 p-6 rounded-xl shadow-xl"
       >
-        <h1 className="text-2xl font-bold mb-4 text-center">Cadastro</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center text-white">Cadastro</h1>
 
         {erro && <p className="text-red-400 mb-3">{erro}</p>}
         {sucesso && <p className="text-green-400 mb-3">{sucesso}</p>}
 
-        {/* EMAIL */}
-        <label className="block mt-2">Email</label>
-        <input
-          name="email"
-          type="email"
-          value={form.email}
-          onChange={handleChange}
-          className="w-full p-2 rounded text-black"
-          required
-        />
-
-        {/* SENHA */}
-        <label className="block mt-2">Senha</label>
-        <input
-          name="senha"
-          type="password"
-          value={form.senha}
-          onChange={handleChange}
-          className="w-full p-2 rounded text-black"
-          required
-        />
-
-        {/* NOME */}
-        <label className="block mt-2">Nome</label>
-        <input
-          name="nome"
-          value={form.nome}
-          onChange={handleChange}
-          className="w-full p-2 rounded text-black"
-          required
-        />
-
-        {/* CPF */}
-        <label className="block mt-2">CPF</label>
-        <input
-          name="cpf"
-          value={form.cpf}
-          onChange={handleChange}
-          className="w-full p-2 rounded text-black"
-          required
-        />
-
-        {/* TELEFONE */}
-        <label className="block mt-2">Telefone</label>
-        <input
-          name="telefone"
-          value={form.telefone}
-          onChange={handleChange}
-          className="w-full p-2 rounded text-black"
-          required
-        />
+        {/* INPUTS */}
+        {["email","senha","nome","CPF","telefone","dataNascimento"].map((field) => (
+          <div key={field} className="mt-3">
+            <label className="block mb-1 capitalize">{field === "dataNascimento" ? "Data de Nascimento" : field}</label>
+            <input
+              name={field}
+              type={field === "senha" ? "password" : field === "dataNascimento" ? "date" : "text"}
+              value={form[field]}
+              onChange={handleChange}
+              className="w-full p-2 rounded bg-indigo-900/50 text-white mt-1 border border-slate-700 focus:ring-2 focus:ring-purple-500"
+              required
+            />
+          </div>
+        ))}
 
         {/* TIPO */}
-        <label className="block mt-2">Tipo de Usuário</label>
-        <select
-          name="tipo"
-          value={form.tipo}
-          onChange={handleChange}
-          className="w-full p-2 rounded text-black"
-          required
-        >
-          <option value="">Selecione</option>
-          <option value="ADMIN">Admin</option>
-          <option value="ALUNO">Aluno</option>
-          <option value="PROFESSOR">Professor</option>
-        </select>
+        <div className="mt-3">
+          <label className="block mb-1">Tipo de Usuário</label>
+          <select
+            name="tipo"
+            value={form.tipo}
+            onChange={handleChange}
+            className="w-full p-2 rounded bg-indigo-900/50 text-white mt-1 border border-slate-700 focus:ring-2 focus:ring-purple-500"
+            required
+          >
+            <option value="">Selecione...</option>
+            <option value="ADMIN">Cliente</option>
+            <option value="ALUNO">Organizador</option>
+            <option value="ALUNO">Administrador</option>
+          </select>
+        </div>
 
-        {/* NASCIMENTO */}
-        <label className="block mt-2">Data de Nascimento</label>
-        <input
-          name="dataNascimento"
-          type="date"
-          value={form.dataNascimento}
-          onChange={handleChange}
-          className="w-full p-2 rounded text-black"
-          required
-        />
-
-        <button className="mt-6 w-full bg-cyan-600 hover:bg-cyan-500 p-2 rounded font-bold transition">
+        {/* BOTÃO */}
+        <button className="mt-6 w-full bg-gradient-to-r from-purple-700 to-indigo-600 hover:brightness-110 p-3 rounded-xl font-bold transition shadow-md text-white">
           Criar Conta
         </button>
 
-        <p className="mt-4 text-sm text-center">
+        <p className="mt-4 text-sm text-center text-slate-300">
           Já possui conta?{" "}
-          <a href="/auth/login" className="text-cyan-300 underline">
+          <a href="/auth/login" className="underline text-purple-400 font-semibold">
             Fazer login
           </a>
         </p>

@@ -34,67 +34,52 @@ export default function LoginPage() {
   };
 
   return (
-    <div
-      className="
-        min-h-screen flex items-center justify-center 
-        bg-gradient-to-br from-purple-200 via-blue-200 to-yellow-200
-        text-gray-900
-      "
-    >
+    <div className="min-h-screen relative flex items-center justify-center bg-slate-900 text-white">
+      {/* Fundo gradiente semelhante ao HomePage */}
+      <div className="absolute inset-0 bg-gradient-to-b from-purple-700/10 to-slate-900 pointer-events-none"></div>
+
       <form
         onSubmit={handleSubmit}
-        className="
-          w-full max-w-sm 
-          bg-white/60 backdrop-blur-xl 
-          p-6 rounded-2xl shadow-2xl border border-white/40
-        "
+        className="relative z-10 w-full max-w-sm bg-indigo-300/50 p-6 rounded-2xl shadow-2xl backdrop-blur-md border border-slate-700/30"
       >
-        <h1 className="text-3xl font-extrabold mb-4 text-center text-gray-800">
-          Login
-        </h1>
+        <h1 className="text-2xl font-bold mb-4 text-center text-white">Login</h1>
 
-        {erro && <p className="text-red-500 mb-3">{erro}</p>}
+        {erro && <p className="text-red-400 mb-3">{erro}</p>}
 
-        <label className="block mb-2 font-semibold">Email</label>
+        {/* EMAIL */}
+        <label className="block mt-2">Email</label>
         <input
           name="email"
           type="email"
           value={form.email}
           onChange={handleChange}
-          className="
-            w-full p-3 rounded-xl text-gray-900 mb-4 
-            border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-400
-          "
+          placeholder="Digite seu email"
+          className="w-full p-2 rounded bg-indigo-900/50 text-white placeholder-white mt-1 border border-slate-700 focus:ring-2 focus:ring-purple-500"
           required
         />
 
-        <label className="block mb-2 font-semibold">Senha</label>
+        {/* SENHA */}
+        <label className="block mt-2">Senha</label>
         <input
           name="senha"
           type="password"
           value={form.senha}
           onChange={handleChange}
-          className="
-            w-full p-3 rounded-xl text-gray-900 mb-6 
-            border border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-400
-          "
+          className="w-full p-2 rounded bg-indigo-900/50 text-white mt-1 border border-slate-700 focus:ring-2 focus:ring-purple-500"
           required
         />
 
         <button
-          className="
-            w-full bg-gradient-to-r from-purple-500 via-blue-500 to-yellow-400
-            hover:opacity-90
-            text-white font-bold p-3 rounded-xl transition
-            shadow-md
-          "
+          type="submit"
+          className="mt-6 w-full bg-gradient-to-r from-purple-700 to-indigo-600 hover:brightness-110 p-3 rounded-xl font-bold transition shadow-md text-white"
         >
           Entrar
         </button>
 
-        <p className="mt-4 text-sm text-center text-gray-700">
+        <p className="mt-4 text-sm text-center text-white">
           Não tem conta?{" "}
-          <a href="/usuario/create" className="text-purple-600 font-semibold underline">
+          <a href="/usuario/create" className="text-violet-00 hover:brightness-150 underline font-semibold"
+          >
             Cadastre-se
           </a>
         </p>

@@ -15,47 +15,51 @@ export default function TopBar() {
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 backdrop-blur-xl
-        ${scrolled 
-          ? "shadow-md bg-gradient-to-r from-purple-300/80 via-blue-200/80 to-yellow-200/80" 
-          : "bg-gradient-to-r from-purple-200/50 via-blue-100/50 to-yellow-100/50"
+        ${
+          scrolled
+            ? "bg-indigo-950/70 shadow-md"
+            : "bg-indigo-950/90"
         }
       `}
     >
-      <div className="max-w-6xl mx-auto flex items-center justify-between p-4 text-gray-900">
+      <div className="max-w-6xl mx-auto flex items-center justify-between p-4 text-white">
 
-        {/* Lado esquerdo */}
-        <Link href="/" className="flex items-center gap-2 font-bold text-xl">
+        {/* LOGO */}
+        <Link href="/" className="flex items-center gap-2 font-bold text-xl text-white">
           <Home size={22} />
-          Events Manager
+          Gerenciador de Eventos
         </Link>
 
-        {/* Meio */}
-        <Link
-          href="/evento/create"
-          className="
-            flex items-center gap-2 px-4 py-2 rounded-xl transition
-            bg-gradient-to-r from-purple-400 to-blue-400
-            hover:from-purple-500 hover:to-blue-500
-            text-white font-semibold shadow-md
-          "
-        >
-          <CalendarPlus size={18} />
-          Cadastrar Evento
-        </Link>
+        {/* BOTÕES */}
+        <div className="flex items-center gap-4">
 
-        {/* Lado direito (LOGIN) */}
-        <Link
-          href="/usuario/login"
-          className="
-            flex items-center gap-2 px-4 py-2 rounded-xl transition
-            border border-gray-400/60
-            hover:bg-white/40
-            text-gray-900 font-semibold
-          "
-        >
-          <LogIn size={18} />
-          Entrar
-        </Link>
+          <Link
+            href="/evento/create"
+            className="
+              flex items-center gap-2 px-4 py-2 rounded-xl
+              border border-white/40 
+              hover:bg-white/10 
+              transition font-semibold
+            "
+          >
+            <CalendarPlus size={18} />
+            Cadastrar Evento
+          </Link>
+
+          <Link
+            href="/usuario/login"
+            className="
+              flex items-center gap-2 px-4 py-2 rounded-xl
+              border border-white/40
+              hover:bg-white/10
+              transition font-semibold
+            "
+          >
+            <LogIn size={18} />
+            Entrar
+          </Link>
+
+        </div>
 
       </div>
     </header>
