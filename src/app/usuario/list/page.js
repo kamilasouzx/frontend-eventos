@@ -21,7 +21,9 @@ export default function UsuariosPage() {
     } finally {
       setLoading(false);
     }
+    
   }
+
 
   async function buscarPorNome() {
     if (busca.trim() === "") return carregarTodos();

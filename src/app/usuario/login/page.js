@@ -93,11 +93,15 @@ export default function LoginPage() {
           Entrar
         </button>
 
-        <p className="mt-4 text-sm text-center text-white">
+        <p className="mt-4 text-sm text-center text-slate-300">
           Não tem conta?{" "}
+<<<<<<< HEAD
           <a
             href="/usuario/create"
             className="text-violet-00 hover:brightness-150 underline font-semibold"
+=======
+          <a href="/usuario/create" className="underline text-purple-300 font-semibold hover:text-purple-400 transition-colors duration-200"
+>>>>>>> 5f35536340c27d3678e9b3b9fe8630572e9623cd
           >
             Cadastre-se
           </a>
