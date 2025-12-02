@@ -84,7 +84,7 @@ export default function CriarEvento() {
   return (
     <div className="min-h-screen relative flex justify-center items-start pt-21 px-10 bg-slate-900 text-white">
       <div className="w-full max-w-2xl bg-indigo-300/50 p-6 rounded-xl shadow-xl backdrop-blur-md border border-slate-700/30">
-        <h1 className="text-3xl font-bold mb-5 text-white text-center">Criar Novo Evento</h1>
+        <h1 className="text-2xl font-bold mb-5 text-white text-center">Criar Novo Evento</h1>
 
         {success && (
           <p className="bg-green-700 text-white p-2 rounded mb-4">{success}</p>

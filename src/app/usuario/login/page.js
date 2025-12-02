@@ -54,7 +54,7 @@ export default function LoginPage() {
           value={form.email}
           onChange={handleChange}
           placeholder="Digite seu email"
-          className="w-full p-2 rounded bg-indigo-900/50 text-white placeholder-white mt-1 border border-slate-700 focus:ring-2 focus:ring-purple-500"
+          className="w-full p-2 rounded bg-indigo-900/50 text-white mt-1 border border-slate-700 focus:ring-2 focus:ring-purple-500"
           required
         />
 
@@ -65,6 +65,7 @@ export default function LoginPage() {
           type="password"
           value={form.senha}
           onChange={handleChange}
+          placeholder="Digite sua senha"
           className="w-full p-2 rounded bg-indigo-900/50 text-white mt-1 border border-slate-700 focus:ring-2 focus:ring-purple-500"
           required
         />
@@ -76,9 +77,9 @@ export default function LoginPage() {
           Entrar
         </button>
 
-        <p className="mt-4 text-sm text-center text-white">
+        <p className="mt-4 text-sm text-center text-slate-300">
           Não tem conta?{" "}
-          <a href="/usuario/create" className="text-violet-00 hover:brightness-150 underline font-semibold"
+          <a href="/usuario/create" className="underline text-purple-300 font-semibold hover:text-purple-400 transition-colors duration-200"
           >
             Cadastre-se
           </a>
