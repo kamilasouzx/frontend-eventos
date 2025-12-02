@@ -2,17 +2,18 @@
 
 import { useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+// Removendo o useRouter para usar window.location.href, que garante o refresh após salvar no localStorage.
 
 export default function LoginPage() {
-  const router = useRouter();
+  // A URL da API com o endpoint de login/autenticação
+  const API_URL = "http://localhost:8080/api/v1/auth/login";
 
   const [form, setForm] = useState({
     email: "",
-    senha: ""
+    senha: "", // Mantendo o nome 'senha' como no código original
   });
 
-  const [erro, setErro] = useState("");
+  const [erro, setErro] = useState(""); // Mantendo o nome 'erro' para manter a UI original
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -20,16 +21,30 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErro("");
+    setErro(""); // Limpa a mensagem de erro anterior
 
     try {
-      const response = await axios.post("http://localhost:8080/api/v1/login", form);
+      const response = await axios.post(API_URL, form);
 
-      if (response.status === 200) {
-        router.push("/evento"); // redireciona para eventos
+      // Desestrutura os dados de autenticação recebidos
+      const { token, id, nome } = response.data;
+
+      // 🔥 SALVAR TUDO NO LOCALSTORAGE (Funcionalidade do segundo código)
+      // O uso de localStorage requer um full refresh, por isso usaremos window.location.href
+      localStorage.setItem("token", token);
+      localStorage.setItem("id", id);
+      localStorage.setItem("nome", nome);
+
+      // Redireciona para /evento (mantendo o destino do primeiro código) com um refresh completo
+      window.location.href = "/evento";
+      
+    } catch (error) {
+      // Tratamento de erros mais específico (baseado no segundo código)
+      if (error.response?.status === 401) {
+        setErro("Email ou senha inválidos.");
+      } else {
+        setErro("Erro ao realizar login. Tente novamente mais tarde.");
       }
-    } catch (err) {
-      setErro("Email ou senha inválidos");
     }
   };
 
@@ -44,7 +59,8 @@ export default function LoginPage() {
       >
         <h1 className="text-2xl font-bold mb-4 text-center text-white">Login</h1>
 
-        {erro && <p className="text-red-400 mb-3">{erro}</p>}
+        {/* Exibe a mensagem de erro ou sucesso */}
+        {erro && <p className="text-red-400 mb-3 text-center">{erro}</p>}
 
         {/* EMAIL */}
         <label className="block mt-2">Email</label>
@@ -54,7 +70,7 @@ export default function LoginPage() {
           value={form.email}
           onChange={handleChange}
           placeholder="Digite seu email"
-          className="w-full p-2 rounded bg-indigo-900/50 text-white placeholder-white mt-1 border border-slate-700 focus:ring-2 focus:ring-purple-500"
+          className="w-full p-2 rounded bg-indigo-900/50 text-white mt-1 border border-slate-700 focus:ring-2 focus:ring-purple-500"
           required
         />
 
@@ -65,6 +81,7 @@ export default function LoginPage() {
           type="password"
           value={form.senha}
           onChange={handleChange}
+          placeholder="Digite sua senha"
           className="w-full p-2 rounded bg-indigo-900/50 text-white mt-1 border border-slate-700 focus:ring-2 focus:ring-purple-500"
           required
         />
@@ -78,7 +95,9 @@ export default function LoginPage() {
 
         <p className="mt-4 text-sm text-center text-white">
           Não tem conta?{" "}
-          <a href="/usuario/create" className="text-violet-00 hover:brightness-150 underline font-semibold"
+          <a
+            href="/usuario/create"
+            className="text-violet-00 hover:brightness-150 underline font-semibold"
           >
             Cadastre-se
           </a>

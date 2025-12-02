@@ -17,92 +17,212 @@ export default function RegisterPage() {
     dataNascimento: ""
   });
 
-  const [erro, setErro] = useState("");
-  const [sucesso, setSucesso] = useState("");
+  const [mensagem, setMensagem] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const API_URL = "http://localhost:8080/api/v1/usuario";
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    let { name, value } = e.target;
+
+    // Máscara para CPF
+    if (name === "cpf") {
+      value = value
+        .replace(/\D/g, "")
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    }
+
+    // Máscara para telefone (Brasil)
+    if (name === "telefone") {
+      value = value
+        .replace(/\D/g, "")
+        .replace(/^(\d{2})(\d)/, "($1) $2")
+        .replace(/(\d{5})(\d)/, "$1-$2")
+        .slice(0, 15);
+    }
+
+    setForm({ ...form, [name]: value });
+  };
+
+  const validarDados = () => {
+    if (!form.email) return "O email deve ser preenchido";
+    if (!/\S+@\S+\.\S+/.test(form.email)) return "O email deve ser válido";
+    if (form.email.length > 150) return "O email deve ter no máximo 150 caracteres";
+
+    if (!form.senha) return "A senha deve ser preenchida";
+
+    if (!form.nome) return "O nome deve ser preenchido";
+    if (form.nome.length < 3 || form.nome.length > 150)
+      return "O nome deve ter entre 3 e 150 caracteres";
+
+    if (!form.cpf) return "O CPF deve ser preenchido";
+
+    if (!form.telefone) return "O telefone deve ser preenchido";
+    if (form.telefone.length > 15) return "O telefone deve ter no máximo 15 caracteres";
+
+    if (!form.tipo) return "O tipo do usuário deve ser preenchido";
+
+    if (!form.dataNascimento) return "A data de nascimento deve ser preenchida";
+
+    return null;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErro("");
-    setSucesso("");
+    setMensagem("");
+    setSuccess(false);
+
+    const erro = validarDados();
+    if (erro) {
+      setMensagem(erro);
+      return;
+    }
 
     try {
       const payload = { ...form };
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/usuario",
-        payload
-      );
+      await axios.post(API_URL, payload);
 
-      if (response.status === 201 || response.status === 200) {
-        setSucesso("Conta criada com sucesso!");
-        setTimeout(() => router.push("/auth/login"), 1500);
+      setMensagem("Cadastro concluído com sucesso!");
+      setSuccess(true);
+
+      setTimeout(() => router.push("/auth/login"), 1500);
+
+      setForm({
+        email: "",
+        senha: "",
+        nome: "",
+        cpf: "",
+        telefone: "",
+        tipo: "",
+        dataNascimento: ""
+      });
+    } catch (error) {
+      if (error.response?.data?.errors) {
+        const erros = error.response.data.errors;
+        const campo = Object.keys(erros)[0];
+        const msg = erros[campo];
+        setMensagem(msg);
+      } else {
+        setMensagem("Erro ao cadastrar usuário.");
       }
-    } catch (err) {
-      setErro("Erro ao cadastrar. Verifique os campos.");
     }
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center bg-slate-900 text-white">
-      {/* Fundo gradiente HomePage */}
+    <div className="min-h-screen relative flex items-center justify-center bg-slate-900 text-white p-4">
       <div className="absolute inset-0 bg-gradient-to-b from-purple-700/10 to-slate-900 pointer-events-none"></div>
 
       <form
         className="relative z-10 w-full max-w-md bg-indigo-300/50 p-6 rounded-2xl shadow-2xl backdrop-blur-md border border-slate-700/30"
-      
         onSubmit={handleSubmit}
       >
         <h1 className="text-2xl font-bold mb-4 text-center text-white">Cadastro</h1>
 
-        {erro && <p className="text-red-400 mb-3">{erro}</p>}
-        {sucesso && <p className="text-green-400 mb-3">{sucesso}</p>}
+        {mensagem && (
+          <p className={`mb-3 text-center font-semibold ${success ? "text-green-400" : "text-red-400"}`}>
+            {mensagem}
+          </p>
+        )}
 
-        {/* INPUTS */}
-        {["email","senha","nome","CPF","telefone","dataNascimento"].map((field) => (
-          <div key={field} className="mt-3">
-            <label className="block mb-1 capitalize">{field === "dataNascimento" ? "Data de Nascimento" : field}</label>
+        {/* Nome + Tipo */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="text-white mb-1 block">Nome</label>
             <input
-              name={field}
-              type={field === "senha" ? "password" : field === "dataNascimento" ? "date" : "text"}
-              value={form[field]}
+              type="text"
+              name="nome"
+              value={form.nome}
               onChange={handleChange}
-              className="w-full p-2 rounded bg-indigo-900/50 text-white mt-1 border border-slate-700 focus:ring-2 focus:ring-purple-500"
-              required
+              placeholder="Digite seu nome"
+              className="w-full p-2 rounded bg-indigo-900/50 text-white border border-slate-700 focus:ring-2 focus:ring-purple-500 mt-1"
             />
           </div>
-        ))}
-
-        {/* TIPO */}
-        <div className="mt-3">
-          <label className="block mb-1">Tipo de Usuário</label>
-          <select
-            name="tipo"
-            value={form.tipo}
-            onChange={handleChange}
-            className="w-full p-2 rounded bg-indigo-900/50 text-white mt-1 border border-slate-700 focus:ring-2 focus:ring-purple-500"
-            required
-          >
-            <option value="">Selecione...</option>
-            <option value="ADMIN">Cliente</option>
-            <option value="ALUNO">Organizador</option>
-            <option value="ALUNO">Administrador</option>
-          </select>
+          <div>
+            <label className="text-white mb-1 block">Tipo</label>
+            <select
+              name="tipo"
+              value={form.tipo}
+              onChange={handleChange}
+              className="w-full p-2 rounded bg-indigo-900/50 text-white border border-slate-700 focus:ring-2 focus:ring-purple-500 mt-1"
+            >
+              <option value="">Selecione</option>
+              <option value="CLIENTE">Cliente</option>
+              <option value="ORGANIZADOR">Organizador</option>
+              <option value="ADMINISTRADOR">Administrador</option>
+            </select>
+          </div>
         </div>
 
-        {/* BOTÃO */}
+        {/* Email */}
+        <div className="mt-3">
+          <label className="text-white mb-1 block">Email</label>
+          <input
+            type="email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            placeholder="Digite seu email"
+            className="w-full p-2 rounded bg-indigo-900/50 text-white border border-slate-700 focus:ring-2 focus:ring-purple-500 mt-1"
+          />
+        </div>
+
+        {/* CPF + Data de Nascimento */}
+        <div className="grid grid-cols-2 gap-4 mt-3">
+          <div>
+            <label className="text-white mb-1 block">CPF</label>
+            <input
+              type="text"
+              name="cpf"
+              value={form.cpf}
+              onChange={handleChange}
+              placeholder="Digite seu CPF"
+              className="w-full p-2 rounded bg-indigo-900/50 text-white border border-slate-700 focus:ring-2 focus:ring-purple-500 mt-1"
+            />
+          </div>
+          <div>
+            <label className="text-white mb-1 block">Data de Nascimento</label>
+            <input
+              type="date"
+              name="dataNascimento"
+              value={form.dataNascimento}
+              onChange={handleChange}
+              className="w-full p-2 rounded bg-indigo-900/50 text-white border border-slate-700 focus:ring-2 focus:ring-purple-500 mt-1"
+            />
+          </div>
+        </div>
+
+        {/* Telefone */}
+        <div className="mt-3">
+          <label className="text-white mb-1 block">Telefone</label>
+          <input
+            type="text"
+            name="telefone"
+            value={form.telefone}
+            onChange={handleChange}
+            placeholder="Digite seu telefone"
+            className="w-full p-2 rounded bg-indigo-900/50 text-white border border-slate-700 focus:ring-2 focus:ring-purple-500 mt-1"
+          />
+        </div>
+
+        {/* Senha */}
+        <div className="mt-3">
+          <label className="text-white mb-1 block">Senha</label>
+          <input
+            type="password"
+            name="senha"
+            value={form.senha}
+            onChange={handleChange}
+            placeholder="Digite sua senha"
+            className="w-full p-2 rounded bg-indigo-900/50 text-white border border-slate-700 focus:ring-2 focus:ring-purple-500 mt-1"
+          />
+        </div>
+
+        {/* Botão */}
         <button className="mt-6 w-full bg-gradient-to-r from-purple-700 to-indigo-600 hover:brightness-110 p-3 rounded-xl font-bold transition shadow-md text-white">
           Criar Conta
         </button>
-
-        <p className="mt-4 text-sm text-center text-slate-300">
-          Já possui conta?{" "}
-          <a href="/auth/login" className="underline text-purple-400 font-semibold">
-            Fazer login
-          </a>
-        </p>
       </form>
     </div>
   );
